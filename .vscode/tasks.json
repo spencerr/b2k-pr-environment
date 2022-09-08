@@ -48,7 +48,7 @@
             "targetCluster": "sis",
             "targetNamespace": "b2k",
             "useKubernetesServiceEnvironmentVariables": false,
-            "isolateAs": "spencer-c31e"
+            "isolateAs": "spencer-f610"
         },
         {
             "label": "bridge-to-kubernetes.compound",
