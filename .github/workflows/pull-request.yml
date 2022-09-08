@@ -7,7 +7,7 @@ on:
 jobs:
   frontend-gateway:
     concurrency: 
-      group: pr-${{ github.event.pull_request.number }}
+      group: gateway-pr-${{ github.event.pull_request.number }}
       cancel-in-progress: true
     uses: ./.github/workflows/pull-request-workflow.yml
     secrets: inherit
@@ -22,7 +22,7 @@ jobs:
 
   bar-microservice:
     concurrency: 
-      group: pr-${{ github.event.pull_request.number }}
+      group: bar-pr-${{ github.event.pull_request.number }}
       cancel-in-progress: true
     uses: ./.github/workflows/pull-request-workflow.yml
     secrets: inherit
@@ -37,7 +37,7 @@ jobs:
 
   foo-microservice:
     concurrency: 
-      group: pr-${{ github.event.pull_request.number }}
+      group: foo-pr-${{ github.event.pull_request.number }}
       cancel-in-progress: true
     uses: ./.github/workflows/pull-request-workflow.yml
     secrets: inherit
