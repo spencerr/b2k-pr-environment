@@ -1,0 +1,62 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/People/SIS.PeopleMS/SIS.PeopleMS.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/People/SIS.PeopleMS/SIS.PeopleMS.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "${workspaceFolder}/People/SIS.PeopleMS/SIS.PeopleMS.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "bridge-to-kubernetes.resource",
+            "type": "bridge-to-kubernetes.resource",
+            "resource": "sis-peoplems",
+            "resourceType": "service",
+            "ports": [
+                80
+            ],
+            "targetCluster": "sis",
+            "targetNamespace": "sis",
+            "useKubernetesServiceEnvironmentVariables": false,
+            "isolateAs": "spencer-0d41"
+        },
+        {
+            "label": "bridge-to-kubernetes.compound",
+            "dependsOn": [
+                "bridge-to-kubernetes.resource",
+                "build"
+            ],
+            "dependsOrder": "sequence"
+        }
+    ]
+}

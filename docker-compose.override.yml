@@ -1,0 +1,38 @@
+version: '3.4'
+
+services:
+  bar-microservice:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=p@ssw0rd
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+
+  foo-microservice:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=p@ssw0rd
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+
+  frontend-gateway:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=p@ssw0rd
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - ~/.aspnet/https:/https:ro

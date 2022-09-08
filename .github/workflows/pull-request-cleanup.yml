@@ -1,0 +1,23 @@
+name: Pull Request Cleanup
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup-pr:
+    runs-on: 'ubuntu-latest'
+    steps:
+    - name: Helm - Install
+      uses: Azure/setup-helm@v3
+      with:
+        version: 'latest'
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Helm - Uninstall Chart
+      run: >
+        helm uninstall ${{ inputs.serviceName }}-${{ github.event.pull_request.number }} ${{ inputs.helmChartPath }}
+        --namespace ${{ inputs.namespace }}
+
+    - name: 'Docker - Cleanup PR Tags'
+      run: |
+        docker rmi $(docker images --filter=reference="sis-peoplems:pr-${{ github.event.pull_request.number }}-*" -q)

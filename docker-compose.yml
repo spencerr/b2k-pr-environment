@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  bar-microservice:
+    container_name: bar-microservice
+    image: spencerritzow/bar-microservice:dev
+    build:
+      context: .
+      dockerfile: Bar/BarMicroservice/Dockerfile
+    ports:
+      - "51000:443"
+
+  foo-microservice:
+    container_name: foo-microservice
+    image: spencerritzow/foo-microservice:dev
+    build:
+      context: .
+      dockerfile: Foo/FooMicroservice/Dockerfile
+    ports:
+      - "52000:443"
+
+  frontend-gateway:
+    container_name: frontend-gateway
+    image: spencerritzow/frontend-gateway:dev
+    build:
+      context: .
+      dockerfile: Gateway/FrontendGateway/Dockerfile
+    ports:
+      - "50010:443"

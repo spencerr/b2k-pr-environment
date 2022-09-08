@@ -1,0 +1,102 @@
+name: Microservice Pull Request
+
+on:
+  workflow_call:
+    inputs:
+      solutionPath: 
+        required: true
+        type: string
+      dockerFilePath: 
+        required: true
+        type: string
+      helmChartPath: 
+        required: true
+        type: string
+      hostName:
+        required: true
+        type: string
+      serviceName:
+        required: true
+        type: string
+      repository:
+        required: true
+        type: string
+      namespace:
+        required: true
+        type: string   
+env:
+  tag: 'pr-${{ github.event.pull_request.number }}-${{ github.run_number }}'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Git - Checkout Branch
+      uses: actions/checkout@v3
+    
+    - name: .NET - Setup
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+        
+    - name: .NET - Restore Nugets
+      run: dotnet restore ${{ inputs.solutionPath }}
+      
+    - name: .NET - Build
+      run: dotnet build ${{ inputs.solutionPath }} --no-restore
+      
+    # - name: .NET - Test
+    #   run: dotnet test ${{ inputs.solutionPath }} --no-build --verbosity normal
+
+    - name: Docker - Login
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Docker - Build and Push Containers
+      run: |
+        docker build . -f ${{ inputs.dockerFilePath }} -t ${{ inputs.repository }}:${{ env.tag }}
+        docker push ${{ inputs.repository }}:${{ env.tag }}
+
+    - name: AKS - Login
+      id: login
+      uses: azure/login@v1.4.3
+      with:
+        creds: ${{ secrets.AZURE_AKS_CREDENTIALS }}
+
+    - name: AKS - Set AKS Context
+      id: set-context
+      uses: azure/aks-set-context@v3
+      with:
+        resource-group: '${{ secrets.AZURE_AKS_RESOURCE_GROUP }}' 
+        cluster-name: '${{ secrets.AZURE_AKS_CLUSTER_NAME }}'
+
+    - name: AKS - Install Helm
+      uses: Azure/setup-helm@v3
+      with:
+        version: 'latest'
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: AKS - Deploy Helm Chart
+      run: >
+        helm upgrade ${{ inputs.serviceName }}-${{ github.event.pull_request.number }} ${{ inputs.helmChartPath }}
+        --install
+        --force
+        --namespace ${{ inputs.namespace }}
+        --set-string image.tag='${{ env.tag }}'
+        --set-string fullnameOverride='${{ inputs.serviceName }}-${{ github.event.pull_request.number }}'
+        --set-string ingress.hostPrefix='test-pr-${{ github.event.pull_request.number }}.${{ inputs.hostName }}'
+
+    - name: AKS - Add Bridge To Kubernetes Routing
+      run: |
+        kubectl label pods \
+        --selector="app.kubernetes.io/name=${{ inputs.serviceName }},app.kubernetes.io/instance=${{ inputs.serviceName }}-${{ github.event.pull_request.number }}" \
+        routing.visualstudio.io/route-from=${{ inputs.serviceName }} \
+        -n ${{ inputs.namespace }} --overwrite=true
+
+        kubectl annotate pods \
+        --selector="app.kubernetes.io/name=${{ inputs.serviceName }},app.kubernetes.io/instance=${{ inputs.serviceName }}-${{ github.event.pull_request.number }}" \
+        routing.visualstudio.io/route-on-header=kubernetes-route-as=pr-${{ github.event.pull_request.number }} \
+        -n ${{ inputs.namespace }} --overwrite=true

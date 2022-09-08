@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+    <UserSecretsId>b5a8bdc9-b0d5-4173-ad5e-83e61bc56712</UserSecretsId>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
+		<PackageReference Include="SIS.NSwag.MSBuild" Version="13.16.1-dev-20220701-0410">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bar\BarMicroservice.Client\BarMicroservice.Client.csproj" />
+    <ProjectReference Include="..\..\Foo\FooMicroservice.Client\FooMicroservice.Client.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.Common\Shared.Common.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,9 @@
+dependencies:
+- name: sis-peoplems
+  repository: file://../People/charts
+  version: 0.0.1
+- name: sis-gateway
+  repository: file://../Gateway/charts
+  version: 0.0.1
+digest: sha256:09a8c59b58a64fbf2973ee32d94d3871239ee2008d71669916bdc49c6898ca1b
+generated: "2022-09-05T22:57:37.6414424-05:00"

@@ -1,0 +1,52 @@
+name: Microservice Pull Request
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  frontend-gateway:
+    concurrency: 
+      group: pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    uses: ./.github/workflows/pull-request-workflow.yml
+    secrets: inherit
+    with:
+      solutionPath: './Bridge2Kubernetes.sln'
+      dockerFilePath: 'Gateway/FrontendGateway/Dockerfile'
+      helmChartPath: './People/charts/'
+      hostName: 'gateway'
+      serviceName: 'frontend-gateway'
+      repository: 'spencerritzow/frontend-gateway'
+      namespace: 'b2k'
+
+  bar-microservice:
+    concurrency: 
+      group: pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    uses: ./.github/workflows/pull-request-workflow.yml
+    secrets: inherit
+    with:
+      solutionPath: './Bridge2Kubernetes.sln'
+      dockerFilePath: 'Bar/BarMicroservice/Dockerfile'
+      helmChartPath: './Bar/charts/'
+      hostName: 'bar'
+      serviceName: 'bar-microservice'
+      repository: 'spencerritzow/bar-microservice'
+      namespace: 'b2k'
+
+  foo-microservice:
+    concurrency: 
+      group: pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    uses: ./.github/workflows/pull-request-workflow.yml
+    secrets: inherit
+    with:
+      solutionPath: './Bridge2Kubernetes.sln'
+      dockerFilePath: 'Foo/FooMicroservice/Dockerfile'
+      helmChartPath: './Foo/charts/'
+      hostName: 'foo'
+      serviceName: 'foo-microservice'
+      repository: 'spencerritzow/foo-microservice'
+      namespace: 'b2k'
+      

@@ -1,0 +1,29 @@
+### Global Values if any ###
+global:
+  logAsJson: true
+  dapr:
+    grpcPort: "50000"
+
+# Default values for sis-peoplems.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+service:
+  type: ClusterIP
+  port: 443
+  targetPort: 443
+
+settings: {}
+
+ingress:
+  enabled: false
+  annotations: {}
