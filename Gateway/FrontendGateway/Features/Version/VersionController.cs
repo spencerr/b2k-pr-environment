@@ -1,5 +1,4 @@
-﻿using BarMicroservice.Client;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace SIS.Application.Features.People;
 
@@ -9,12 +8,15 @@ public class VersionController : ControllerBase
 {
     private readonly BarMicroservice.Client.IVersionClient _barVersionClient;
     private readonly FooMicroservice.Client.IVersionClient _fooVersionClient;
+    private readonly IConfiguration _configuration;
 
     public VersionController(BarMicroservice.Client.IVersionClient barVersionClient,
-        FooMicroservice.Client.IVersionClient fooVersionClient)
+        FooMicroservice.Client.IVersionClient fooVersionClient,
+        IConfiguration configuration)
     {
         _barVersionClient = barVersionClient;
         _fooVersionClient = fooVersionClient;
+        _configuration = configuration;
     }
 
     [HttpGet]
@@ -29,6 +31,7 @@ public class VersionController : ControllerBase
         {
             BarVersion = barVersionTask.Result,
             FooVersion = fooVersionTask.Result,
+            GatewayVersion = _configuration.GetValue<string>("version")
         });
     }
 }
