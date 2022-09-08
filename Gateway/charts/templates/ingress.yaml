@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: '*review.{{ .Values.ingress.hostPrefix }}.{{ .Values.ingress.hostName }}'
+  - host: '*.review.{{ .Values.ingress.hostPrefix }}.{{ .Values.ingress.hostName }}'
     http:
       paths:
       - path: /
