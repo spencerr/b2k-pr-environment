@@ -124,12 +124,12 @@ public static class ServiceCollectionExtensions
         return app;
     }
 
-    public static IApplicationBuilder UseReviewEnvironment(this IApplicationBuilder app)
+    public static IApplicationBuilder UseReviewEnvironment(this IApplicationBuilder app, string prefix = "review")
     {
         app.Use((context, next) =>
         {
             var subdomains = context.Request.Host.Host.Split(".");
-            if (subdomains is { Length: > 1 } && subdomains[1] == "review")
+            if (subdomains is { Length: > 1 } && subdomains[1] == prefix)
             {
                 context.Request.Headers.Add(Headers.KubernetesRouteAs, subdomains[0]);
             }
