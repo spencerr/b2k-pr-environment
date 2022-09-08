@@ -19,5 +19,5 @@ spec:
           service:
             name: {{ include "bar-microservice.fullname" . }}
             port:
-              number: 80
+              name: http
 {{ end }}
