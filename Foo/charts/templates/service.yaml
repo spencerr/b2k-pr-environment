@@ -10,6 +10,6 @@ spec:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
-      name: https
+      name: http
   selector:
     {{- include "foo-microservice.selectorLabels" . | nindent 4 }}
