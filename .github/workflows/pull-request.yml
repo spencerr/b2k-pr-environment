@@ -5,7 +5,28 @@ on:
     branches: [ "main" ]
 
 jobs:
+  path-filters:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend-modified: ${{ steps.filter.outputs.gateway }}
+      bar-modified: ${{ steps.filter.outputs.bar }}
+      foo-modified: ${{ steps.filter.outputs.foo }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          gateway:
+            - 'Gateway/**'
+          bar:
+            - 'Bar/**'
+          foo:
+            - 'Foo/**'
+
   frontend-gateway:
+    needs: path-filters
+    if: needs.path-filters.outputs.frontend-modified == 'true'
     concurrency: 
       group: gateway-pr-${{ github.event.pull_request.number }}
       cancel-in-progress: true
@@ -21,6 +42,8 @@ jobs:
       namespace: 'b2k'
 
   bar-microservice:
+    needs: path-filters
+    if: needs.path-filters.outputs.bar-modified == 'true'
     concurrency: 
       group: bar-pr-${{ github.event.pull_request.number }}
       cancel-in-progress: true
@@ -36,6 +59,8 @@ jobs:
       namespace: 'b2k'
 
   foo-microservice:
+    needs: path-filters
+    if: needs.path-filters.outputs.foo-modified == 'true'
     concurrency: 
       group: foo-pr-${{ github.event.pull_request.number }}
       cancel-in-progress: true
