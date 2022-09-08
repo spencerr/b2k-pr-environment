@@ -1,0 +1,21 @@
+apiVersion: v2
+appVersion: "1.0"
+description: Bridge To Kubernetes Example
+name: b2k
+version: 0.0.1
+
+dependencies:
+  - alias: bar-microservice
+    name: bar-microservice
+    version: 0.0.1
+    repository: file://../Bar/charts
+
+  - alias: foo-microservice
+    name: foo-microservice
+    version: 0.0.1
+    repository: file://../Foo/charts
+
+  - alias: frontend-gateway
+    name: frontend-gateway
+    version: 0.0.1
+    repository: file://../Gateway/charts

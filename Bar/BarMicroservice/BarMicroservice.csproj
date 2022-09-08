@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>87b7fb24-e6cb-48ea-b623-ba8fccfdd634</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+	<RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+	<DockerfileContext>..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
+    <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.0.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.HeaderPropagation" Version="6.0.6" />
+	  <PackageReference Include="NSwag.MSBuild" Version="13.16.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Shared.Common\Shared.Common.csproj" />
+  </ItemGroup>
+
+	<Target Name="NSwag" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Debug' ">
+		<Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Swagger" Command="$(NSwagExe_Net60) run nswag.json /variables:Configuration=$(Configuration)" />
+	</Target>
+</Project>

@@ -1,0 +1,33 @@
+{{ if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "frontend-gateway-ingress.fullname" . }}
+  labels:
+    {{- include "frontend-gateway.labels" . | nindent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: '*.review.{{ .Values.ingress.hostPrefix }}.{{ .Values.ingress.hostName }}'
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "frontend-gateway.fullname" . }}
+            port:
+              number: 80
+  - host: {{ .Values.ingress.hostPrefix }}.{{ .Values.ingress.hostName }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "frontend-gateway.fullname" . }}
+            port:
+              number: 80
+{{ end }}

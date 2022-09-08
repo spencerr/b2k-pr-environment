@@ -1,0 +1,12 @@
+dependencies:
+- name: bar-microservice
+  repository: file://../Bar/charts
+  version: 0.0.1
+- name: foo-microservice
+  repository: file://../Foo/charts
+  version: 0.0.1
+- name: frontend-gateway
+  repository: file://../Gateway/charts
+  version: 0.0.1
+digest: sha256:f399e6fa487849a71ab4808f1dad99fa656065e6a823002ff538f4fe7d2aad78
+generated: "2022-09-07T21:05:27.1394808-05:00"
