@@ -88,7 +88,8 @@ jobs:
         --create-namespace
         --set-string image.tag='${{ env.tag }}'
         --set-string fullnameOverride='${{ inputs.serviceName }}-${{ github.event.pull_request.number }}'
-        --set-string ingress.hostPrefix='test-pr-${{ github.event.pull_request.number }}.${{ inputs.hostName }}'
+        --set ingress.enabled=false
+    #--set-string ingress.hostPrefix='test-pr-${{ github.event.pull_request.number }}.${{ inputs.hostName }}'
 
     - name: AKS - Add Bridge To Kubernetes Routing
       run: |
