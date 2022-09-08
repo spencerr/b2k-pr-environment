@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/People/SIS.PeopleMS/SIS.PeopleMS.csproj",
+                "${workspaceFolder}/Bar/BarMicroservice/BarMicroservice.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/People/SIS.PeopleMS/SIS.PeopleMS.csproj",
+                "${workspaceFolder}/Bar/BarMicroservice/BarMicroservice.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -33,22 +33,22 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/People/SIS.PeopleMS/SIS.PeopleMS.csproj"
+                "${workspaceFolder}/Bar/BarMicroservice/BarMicroservice.csproj"
             ],
             "problemMatcher": "$msCompile"
         },
         {
             "label": "bridge-to-kubernetes.resource",
             "type": "bridge-to-kubernetes.resource",
-            "resource": "sis-peoplems",
+            "resource": "bar-microservice",
             "resourceType": "service",
             "ports": [
                 80
             ],
             "targetCluster": "sis",
-            "targetNamespace": "sis",
+            "targetNamespace": "b2k",
             "useKubernetesServiceEnvironmentVariables": false,
-            "isolateAs": "spencer-0d41"
+            "isolateAs": "spencer-c31e"
         },
         {
             "label": "bridge-to-kubernetes.compound",

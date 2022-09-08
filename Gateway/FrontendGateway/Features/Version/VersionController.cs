@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace SIS.Application.Features.People;
 
+[ApiController]
+[Route("[controller]")]
 public class VersionController : ControllerBase
 {
     private readonly BarMicroservice.Client.IVersionClient _barVersionClient;

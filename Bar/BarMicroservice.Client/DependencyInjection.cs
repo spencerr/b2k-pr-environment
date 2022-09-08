@@ -25,12 +25,14 @@ public class HttpClientRegistrationStrategy : RegistrationStrategy
             .GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
             .Where(m => m.Name == nameof(HttpClientFactoryServiceCollectionExtensions.AddHttpClient))
             .Where(m => m.GetGenericArguments() is { Length: 2 })
-            .Where(m => m.GetParameters() is { Length: 1 } parameters && parameters[0].ParameterType == typeof(IServiceCollection))
+            .Where(m => m.GetParameters() is { Length: 2 } parameters
+                && parameters[0].ParameterType == typeof(IServiceCollection)
+                && parameters[1].ParameterType == typeof(string))
             .First();
 
         var genericMethod = method.MakeGenericMethod(descriptor.ServiceType, descriptor.ImplementationType!);
 
-        var httpClientBuilder = genericMethod.Invoke(null, new[] { services }) as IHttpClientBuilder;
+        var httpClientBuilder = genericMethod.Invoke(null, new object[] { services, $"bar-{descriptor.ServiceType.Name}" }) as IHttpClientBuilder;
         httpClientBuilder!.AddHeaderPropagation();
     }
 }

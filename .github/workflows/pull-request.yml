@@ -14,7 +14,7 @@ jobs:
     with:
       solutionPath: './Bridge2Kubernetes.sln'
       dockerFilePath: 'Gateway/FrontendGateway/Dockerfile'
-      helmChartPath: './People/charts/'
+      helmChartPath: './Gateway/charts/'
       hostName: 'gateway'
       serviceName: 'frontend-gateway'
       repository: 'spencerritzow/frontend-gateway'

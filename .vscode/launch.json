@@ -5,30 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (web) with Kubernetes",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "bridge-to-kubernetes.compound",
-            "program": "${workspaceFolder}/People/SIS.PeopleMS/bin/Debug/net6.0/SIS.PeopleMS.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/People/SIS.PeopleMS",
-            "stopAtEntry": false,
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development",
-                "ASPNETCORE_URLS": "http://spencer-0d41.people.4caf0febe9f34ceb8bee.centralus.aksapp.io"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
-            }
-        },
-        {
             "name": ".NET Core Launch (web)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/People/SIS.PeopleMS/bin/Debug/net6.0/SIS.PeopleMS.dll",
+            "program": "${workspaceFolder}/Bar/BarMicroservice/bin/Debug/net6.0/BarMicroservice.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/People/SIS.PeopleMS",
+            "cwd": "${workspaceFolder}/Bar/BarMicroservice",
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "openExternally",
