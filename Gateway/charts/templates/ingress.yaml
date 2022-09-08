@@ -10,6 +10,16 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
+  - host: '*review.{{ .Values.ingress.hostPrefix }}.{{ .Values.ingress.hostName }}'
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "frontend-gateway.fullname" . }}
+            port:
+              number: 80
   - host: {{ .Values.ingress.hostPrefix }}.{{ .Values.ingress.hostName }}
     http:
       paths:
