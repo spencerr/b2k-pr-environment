@@ -26,6 +26,7 @@ on:
         type: string   
 env:
   tag: 'pr-${{ github.event.pull_request.number }}-${{ github.run_number }}'
+  helmDeployment: '${{ inputs.serviceName }}-${{ github.event.pull_request.number }}'
 
 jobs:
   build-and-test:
@@ -45,7 +46,7 @@ jobs:
       
     - name: .NET - Build
       run: dotnet build ${{ inputs.solutionPath }} --no-restore
-      
+
     # - name: .NET - Test
     #   run: dotnet test ${{ inputs.solutionPath }} --no-build --verbosity normal
 
@@ -81,24 +82,23 @@ jobs:
 
     - name: AKS - Deploy Helm Chart
       run: >
-        helm upgrade ${{ inputs.serviceName }}-${{ github.event.pull_request.number }} ${{ inputs.helmChartPath }}
+        helm upgrade ${{ env.helmDeployment }} ${{ inputs.helmChartPath }}
         --install
         --force
         --namespace ${{ inputs.namespace }}
         --create-namespace
         --set-string image.tag='${{ env.tag }}'
-        --set-string fullnameOverride='${{ inputs.serviceName }}-${{ github.event.pull_request.number }}'
+        --set-string fullnameOverride='${{ env.helmDeployment }}'
         --set ingress.enabled=false
-    #--set-string ingress.hostPrefix='test-pr-${{ github.event.pull_request.number }}.${{ inputs.hostName }}'
 
     - name: AKS - Add Bridge To Kubernetes Routing
       run: |
         kubectl label pods \
-        --selector="app.kubernetes.io/name=${{ inputs.serviceName }},app.kubernetes.io/instance=${{ inputs.serviceName }}-${{ github.event.pull_request.number }}" \
+        --selector="app.kubernetes.io/name=${{ inputs.serviceName }},app.kubernetes.io/instance=${{ env.helmDeployment }}" \
         routing.visualstudio.io/route-from=${{ inputs.serviceName }} \
         -n ${{ inputs.namespace }} --overwrite=true
 
         kubectl annotate pods \
-        --selector="app.kubernetes.io/name=${{ inputs.serviceName }},app.kubernetes.io/instance=${{ inputs.serviceName }}-${{ github.event.pull_request.number }}" \
+        --selector="app.kubernetes.io/name=${{ inputs.serviceName }},app.kubernetes.io/instance=${{ env.helmDeployment }}" \
         routing.visualstudio.io/route-on-header=kubernetes-route-as=pr-${{ github.event.pull_request.number }} \
         -n ${{ inputs.namespace }} --overwrite=true
