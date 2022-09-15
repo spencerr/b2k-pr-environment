@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FooMicroservice.Client;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BarMicroservice.Features.Version;
 
@@ -7,15 +8,25 @@ namespace BarMicroservice.Features.Version;
 public class VersionController : Controller
 {
     private readonly IConfiguration _configuration;
+    private readonly IVersionClient _versionClient;
 
-    public VersionController(IConfiguration configuration)
+    public VersionController(IConfiguration configuration, IVersionClient versionClient)
     {
         _configuration = configuration;
+        _versionClient = versionClient;
     }
 
     [HttpGet]
-    public string GetVersion()
+    public async Task<Versioning> GetVersion()
     {
-        return _configuration.GetValue<string>("version");
+        return new Versioning(
+            _configuration.GetValue<string>("version"),
+            await _versionClient.GetVersionAsync()
+        );
     }
 }
+
+public record Versioning(
+    string BarVersion,
+    string FooVersion
+    );

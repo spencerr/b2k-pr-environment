@@ -27,6 +27,7 @@ on:
 env:
   tag: 'pr-${{ github.event.pull_request.number }}-${{ github.run_number }}'
   helmDeployment: '${{ inputs.serviceName }}-${{ github.event.pull_request.number }}'
+  isolationVersion: 'pr-${{ github.event.pull_request.number }}'
 
 jobs:
   build-and-test:
@@ -100,5 +101,5 @@ jobs:
 
         kubectl annotate pods \
         --selector="app.kubernetes.io/name=${{ inputs.serviceName }},app.kubernetes.io/instance=${{ env.helmDeployment }}" \
-        routing.visualstudio.io/route-on-header=kubernetes-route-as=pr-${{ github.event.pull_request.number }} \
+        routing.visualstudio.io/route-on-header=kubernetes-route-as=${{ env.isolationVersion }} \
         -n ${{ inputs.namespace }} --overwrite=true
