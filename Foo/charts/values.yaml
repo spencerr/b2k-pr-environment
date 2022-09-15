@@ -27,7 +27,7 @@ service:
   targetPort: 80
 
 ingress:
-  enabled: true
+  enabled: false
   hostName: '4caf0febe9f34ceb8bee.centralus.aksapp.io'
   hostPrefix: 'foo'
   annotations: {}
