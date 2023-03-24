@@ -9,7 +9,7 @@ nameOverride: ''
 
 image:
   repository: spencerritzow/bar-microservice
-  tag: latest
+  tag: dev
   pullPolicy: Always
 
 serviceAccount:
@@ -29,5 +29,5 @@ service:
 ingress:
   enabled: false
   hostName: 'ab7c3961-bfe1-4ab2-bccc-ce9e4e37b47f.cpc1-us-central.linodelke.net'
-  hostPrefix: 'bar'
+  hostPrefix: 'bars'
   annotations: {}
