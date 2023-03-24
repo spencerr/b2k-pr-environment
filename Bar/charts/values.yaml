@@ -28,6 +28,6 @@ service:
 
 ingress:
   enabled: false
-  hostName: '4caf0febe9f34ceb8bee.centralus.aksapp.io'
+  hostName: 'ab7c3961-bfe1-4ab2-bccc-ce9e4e37b47f.cpc1-us-central.linodelke.net'
   hostPrefix: 'bar'
   annotations: {}
