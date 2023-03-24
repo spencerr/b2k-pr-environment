@@ -9,7 +9,7 @@ nameOverride: ''
 
 image:
   repository: spencerritzow/bar-microservice
-  tag: dev
+  tag: latest
   pullPolicy: Always
 
 serviceAccount:
