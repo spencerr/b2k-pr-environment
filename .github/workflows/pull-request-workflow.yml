@@ -26,12 +26,10 @@ jobs:
         dotnet-version: 6.0.x
         
     - name: .NET - Restore Nugets
-      working-directory: ${{ inputs.solution-directory }}
-      run: dotnet restore 
+      run: dotnet restore ${{ inputs.solution-directory }}
       
     - name: .NET - Build
-      working-directory: ${{ inputs.solution-directory }}
-      run: dotnet build --no-restore
+      run: dotnet build ${{ inputs.solution-directory }} --no-restore
 
     # - name: .NET - Test
     #   run: dotnet test ${{ inputs.solutionPath }} --no-build --verbosity normal
