@@ -46,7 +46,7 @@ jobs:
     uses: ./.github/workflows/pull-request-workflow.yml
     secrets: inherit
     with:
-      solution-directory: './Bridge2Kubernetes.sln'
+      solution-directory: './'
       docker-file-path: 'Bar/BarMicroservice/Dockerfile'
       repository: 'spencerritzow/bar-microservice'
 
@@ -59,7 +59,7 @@ jobs:
     uses: ./.github/workflows/pull-request-workflow.yml
     secrets: inherit
     with:
-      solution-directory: './Bridge2Kubernetes.sln'
+      solution-directory: './'
       docker-file-path: 'Foo/FooMicroservice/Dockerfile'
       repository: 'spencerritzow/foo-microservice'
       
