@@ -12,7 +12,6 @@ builder.Services.AddVerticalSlices(
 
 builder.Services.AddHeaderPropagation(options => options.Headers.Add("kubernetes-route-as"));
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -34,6 +34,13 @@ jobs:
     # - name: .NET - Test
     #   run: dotnet test ${{ inputs.solutionPath }} --no-build --verbosity normal
 
+    - name: Git - Generate Build Number
+      id: version
+      uses: onyxmueller/build-tag-number@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        prefix: services-foo
+
     - name: Docker - Generate Tags
       id: meta
       uses: docker/metadata-action@v4
@@ -47,6 +54,7 @@ jobs:
           type=ref,event=pr
           type=ref,event=tag
           type=sha,event=push
+          type=raw,event=push,value=${{ steps.version.outputs.build_number}}
 
     - name: Docker - Login
       uses: docker/login-action@v2
