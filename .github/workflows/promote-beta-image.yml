@@ -1,0 +1,49 @@
+name: Beta Promotion
+
+on:
+  workflow_dispatch:
+    inputs:
+      service-name:
+        type: string
+        required: true
+jobs:
+  preview-promotion:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Git - Checkout Manifest Repository
+      uses: actions/checkout@v3
+      with:
+        repository: spencerr/poc-argo
+
+    - name: Docker - Add Beta Label
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        # list of Docker images to use as base name for tags
+        images: spencerr/foo-microservice:${{ github.sha }}
+        labels: |
+          kubernetes.environment=beta
+  
+    - name: Docker - Login
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Docker - Push Label
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+
+    - name: Promote - Update Image Version
+      working-directory: apps/b2k-pr-environment/services-foo/beta
+      run: |
+        yq -i 'image.tag = "${{ github.sha }}"' values.yaml
+    
+    - name: Promote - Commit Manifest
+      uses: actions-js/push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
