@@ -35,7 +35,7 @@ jobs:
     with:
       solution-directory: './Bridge2Kubernetes.sln'
       docker-file-path: 'Gateway/FrontendGateway/Dockerfile'
-      repository: 'spencerritzow/frontend-gateway'
+      repository: 'docker.io/spencerritzow/frontend-gateway'
 
   bar-microservice:
     needs: path-filters
@@ -48,7 +48,7 @@ jobs:
     with:
       solution-directory: './Bridge2Kubernetes.sln'
       docker-file-path: 'Bar/BarMicroservice/Dockerfile'
-      repository: 'spencerritzow/bar-microservice'
+      repository: 'docker.io/spencerritzow/bar-microservice'
 
   foo-microservice:
     needs: path-filters
@@ -61,5 +61,5 @@ jobs:
     with:
       solution-directory: './Bridge2Kubernetes.sln'
       docker-file-path: 'Foo/FooMicroservice/Dockerfile'
-      repository: 'spencerritzow/foo-microservice'
+      repository: 'docker.io/spencerritzow/foo-microservice'
       
