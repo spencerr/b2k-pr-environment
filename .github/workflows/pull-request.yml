@@ -33,13 +33,9 @@ jobs:
     uses: ./.github/workflows/pull-request-workflow.yml
     secrets: inherit
     with:
-      solutionPath: './Bridge2Kubernetes.sln'
-      dockerFilePath: 'Gateway/FrontendGateway/Dockerfile'
-      helmChartPath: './Gateway/charts/'
-      hostName: 'gateway'
-      serviceName: 'frontend-gateway'
+      solution-directory: './'
+      docker-file-path: 'Gateway/FrontendGateway/Dockerfile'
       repository: 'spencerritzow/frontend-gateway'
-      namespace: 'b2k'
 
   bar-microservice:
     needs: path-filters
@@ -50,13 +46,9 @@ jobs:
     uses: ./.github/workflows/pull-request-workflow.yml
     secrets: inherit
     with:
-      solutionPath: './Bridge2Kubernetes.sln'
-      dockerFilePath: 'Bar/BarMicroservice/Dockerfile'
-      helmChartPath: './Bar/charts/'
-      hostName: 'bar'
-      serviceName: 'bar-microservice'
+      solution-directory: './Bridge2Kubernetes.sln'
+      docker-file-path: 'Bar/BarMicroservice/Dockerfile'
       repository: 'spencerritzow/bar-microservice'
-      namespace: 'b2k'
 
   foo-microservice:
     needs: path-filters
@@ -67,11 +59,7 @@ jobs:
     uses: ./.github/workflows/pull-request-workflow.yml
     secrets: inherit
     with:
-      solutionPath: './Bridge2Kubernetes.sln'
-      dockerFilePath: 'Foo/FooMicroservice/Dockerfile'
-      helmChartPath: './Foo/charts/'
-      hostName: 'foo'
-      serviceName: 'foo-microservice'
+      solution-directory: './Bridge2Kubernetes.sln'
+      docker-file-path: 'Foo/FooMicroservice/Dockerfile'
       repository: 'spencerritzow/foo-microservice'
-      namespace: 'b2k'
       
