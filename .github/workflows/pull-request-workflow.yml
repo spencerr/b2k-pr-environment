@@ -26,12 +26,10 @@ jobs:
         dotnet-version: 6.0.x
         
     - name: .NET - Restore Nugets
-      working-directory: ${{ inputs.solution-directory }}
-      run: dotnet restore 
+      run: dotnet restore ${{ inputs.solution-directory }}
       
     - name: .NET - Build
-      working-directory: ${{ inputs.solution-directory }}
-      run: dotnet build --no-restore
+      run: dotnet build ${{ inputs.solution-directory }} --no-restore
 
     # - name: .NET - Test
     #   run: dotnet test ${{ inputs.solutionPath }} --no-build --verbosity normal
@@ -41,27 +39,26 @@ jobs:
       uses: docker/metadata-action@v4
       with:
         # list of Docker images to use as base name for tags
-        images: |
-          ${{ inputs.repository }}
+        images: ${{ inputs.repository }}
         # generate Docker tags based on the following events/attributes
         tags: |
           type=ref,event=branch
           type=ref,event=pr
-          type=semver,pattern={{version}}
-          type=sha
+          type=ref,event=tag
+        #type=sha
 
     - name: Docker - Login
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    
+
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
         context: .
         file: ${{ inputs.docker-file-path }}
-        push: ${{ github.ref_type == 'tag' }}
+        push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
 
