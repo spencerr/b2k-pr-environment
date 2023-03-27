@@ -34,12 +34,16 @@ jobs:
     # - name: .NET - Test
     #   run: dotnet test ${{ inputs.solutionPath }} --no-build --verbosity normal
 
-    - name: Git - Generate Build Number
+    - name: Git - Generate Version
       id: version
-      uses: onyxmueller/build-tag-number@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        prefix: services-foo
+      run: |
+        VERSION_TAG="${{ github.run_id }}"
+        ATTEMPT=${{ github.run_attempt}}
+        if [ $ATTEMPT -gt 1 ] then
+          VERSION_TAG=VERSION_TAG + '-$ATTEMPT'
+        fi
+        echo "Version: $VERSION_TAG"
+        echo "VERSION_TAG=$VERSION_TAG" >> $GITHUB_OUTPUT
 
     - name: Docker - Generate Tags
       id: meta
@@ -49,11 +53,9 @@ jobs:
         images: ${{ inputs.repository }}
         # generate Docker tags based on the following events/attributes
         tags: |
-          type=ref,event=branch
           type=ref,event=pr
-          type=ref,event=tag
           type=sha,event=push,format=long
-          type=raw,event=push,value=services-foo-${{ steps.version.outputs.build_number}}
+          type=raw,enable=${{ github.event.action != 'pull-request' }},value=${{ steps.version.outputs.VERSION_TAG }}
 
     - name: Docker - Login
       uses: docker/login-action@v2
