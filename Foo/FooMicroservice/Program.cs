@@ -10,7 +10,6 @@ builder.Services.AddVerticalSlices(
     typeof(Program).Assembly
 );
 
-
 builder.Services.AddHeaderPropagation(options => options.Headers.Add("kubernetes-route-as"));
 
 var app = builder.Build();
