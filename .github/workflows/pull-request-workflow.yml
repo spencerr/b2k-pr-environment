@@ -55,7 +55,7 @@ jobs:
         tags: |
           type=ref,event=pr,suffix=-${{ steps.version.outputs.VERSION_TAG }}
           type=sha,event=push,format=long
-          type=raw,enable=${{ github.event_name != 'pull-request' }},value=alpha-${{ steps.version.outputs.VERSION_TAG }}
+          type=raw,enable=${{ github.event_name != 'pull_request' }},value=alpha-${{ steps.version.outputs.VERSION_TAG }}
 
     - name: Docker - Login
       uses: docker/login-action@v2
