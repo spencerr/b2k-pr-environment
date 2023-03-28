@@ -129,7 +129,7 @@ jobs:
       run: |
         argocd app get ${{ env.APPLICATION_NAME }}
 
-    # - name: AKS - Login  
+    # - name: AKS - Login
     #   id: login
     #   uses: azure/login@v1.4.3
     #   with:
