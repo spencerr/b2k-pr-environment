@@ -43,7 +43,7 @@ jobs:
         VERSION_TAG="${{ github.run_id }}"
         ATTEMPT=${{ github.run_attempt}}
         if [ $ATTEMPT -gt 1 ]; then
-          VERSION_TAG=VERSION_TAG + '-$ATTEMPT'
+          VERSION_TAG='$VERSION_TAG-$ATTEMPT'
         fi
         echo "Version: $VERSION_TAG"
         echo "VERSION_TAG=$VERSION_TAG" >> $GITHUB_OUTPUT
@@ -89,27 +89,26 @@ jobs:
           --password ${{ secrets.ARGOCD_PASSWORD }}
 
     - name: Argo - Find Application
-      id: application
       run: |
         APPLICATION_NAME="pr-${{ github.event.pull_request.number }}-${{ inputs.service-name }}"
-        APPLICATION=$(argocd app get $APPLICATION_NAME)
-        echo "APPLICATION_NAME=$APPLICATION_NAME" >> $GITHUB_OUTPUT
-        echo "APPLICATION=$APPLICATION" >> $GITHUB_OUTPUT
+        echo "APPLICATION_NAME=$APPLICATION_NAME" >> $GITHUB_ENV
 
     - name: Argo - Create Application
-      if: ${{ steps.application.outputs.APPLICATION != '' && github.event_name == 'pull_request' }}
+      if: ${{ github.event_name == 'pull_request' }}
       run: |
-        argocd app create ${{ steps.application.outputs.APPLICATION_NAME }} \
+        argocd app create ${{ env.APPLICATION_NAME }} --upsert \
+          --dest-name in-cluster \
+          --dest-namespace alpha \
+          --project pull-requests \
           --repo ${{ secrets.ARGOCD_REPOSITORY }} \
           --path apps/b2k-pr-environment/${{ inputs.service-name }} \
-          --dest-namespace alpha \
-          --dest-service in-cluster \
           --values values.yaml,alpha/values.yaml \
-          --helm-set bridge-to-kubernetes.enabled=true \
           --helm-set ingress.enabled=false \
-          --helm-set fullnameOverride=${{ steps.application.outputs.APPLICATION_NAME }} \
-          --helm-set bridge-to-kubernetes.route-from=${{ inputs.service-name }} \
-          --helm-set bridge-to-kubernetes.route-as=pr-${{ github.event.pull_request.number }} \
+          --helm-set fullnameOverride=${{ env.APPLICATION_NAME }} \
+          --helm-set image.tag=pr-${{ github.event.pull_request.number }}-${{ steps.version.outputs.VERSION_TAG }} \
+          --helm-set bridgeToKubernetes.enabled=true \
+          --helm-set bridgeToKubernetes.routeFrom=${{ inputs.service-name }} \
+          --helm-set bridgeToKubernetes.routeAs=pr-${{ github.event.pull_request.number }} \
 
     # https://github.com/argoproj/argo-cd/issues/9101
     # - name: Argo - Set Image Tag
@@ -119,19 +118,19 @@ jobs:
     - name: Argo - Sync
       if: ${{ github.event_name == 'pull_request' }}
       run: |
-        argocd app sync ${{ steps.application.outputs.APPLICATION_NAME }}
+        argocd app sync ${{ env.APPLICATION_NAME }}
 
     - name: Argo - Wait
       if: ${{ github.event_name == 'pull_request' }}
       run: |
-        argocd app wait ${{ steps.application.outputs.APPLICATION_NAME }}
+        argocd app wait ${{ env.APPLICATION_NAME }}
 
     - name: Argo - Verify
       if: ${{ github.event_name == 'pull_request' }}
       run: |
-        argocd app get ${{ steps.application.outputs.APPLICATION_NAME }}
+        argocd app get ${{ env.APPLICATION_NAME }}
 
-    # - name: AKS - Login
+    # - name: AKS - Login 
     #   id: login
     #   uses: azure/login@v1.4.3
     #   with:
