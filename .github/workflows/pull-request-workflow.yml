@@ -96,7 +96,7 @@ jobs:
     - name: Argo - Create Application
       if: ${{ github.event_name == 'pull_request' }}
       run: |
-        argocd app create ${{ env.APPLICATION_NAME }} --upsert \3
+        argocd app create ${{ env.APPLICATION_NAME }} --upsert \
           --dest-name in-cluster \
           --dest-namespace alpha \
           --project pull-requests \
