@@ -3,6 +3,9 @@ name: Microservice Pull Request
 on:
   workflow_call:
     inputs:
+      service-name:
+        required: true
+        type: string
       solution-directory: 
         required: true
         type: string
@@ -71,6 +74,62 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+
+    # Initialize PR Environment
+    - name: Argo - Setup
+      run: |
+        curl --insecure -sSL -o /usr/local/bin/argocd https://${{ secrets.ARGOCD_SERVER }}/download/argocd-linux-amd64
+        chmod +x /usr/local/bin/argocd
+
+    - name: Argo - Login
+      run: |
+        argocd login ${{ secrets.ARGOCD_SERVER }} \
+          --insecure \
+          --username ${{ secrets.ARGOCD_USERNAME }} \
+          --password ${{ secrets.ARGOCD_PASSWORD }}
+
+    - name: Argo - Find Application
+      id: application
+      run: |
+        APPLICATION_NAME="pr-${{ github.event.pull_request.number }}-${{ inputs.service-name }}"
+        APPLICATION=$(argocd app get $APPLICATION_NAME)
+        echo "APPLICATION_NAME=$APPLICATION_NAME" >> $GITHUB_OUTPUT
+        echo "APPLICATION=$APPLICATION" >> $GITHUB_OUTPUT
+
+    - name: Argo - Create Application
+      if: ${{ steps.application.outputs.APPLICATION != '' && github.event_name == 'pull_request' }}
+      run: |
+        argocd app create ${{ steps.application.outputs.APPLICATION_NAME }} \
+          --repo ${{ secrets.ARGOCD_REPOSITORY }} \
+          --path apps/b2k-pr-environment/${{ inputs.service-name }} \
+          --dest-namespace alpha \
+          --dest-service in-cluster \
+          --values values.yaml,alpha/values.yaml \
+          --helm-set bridge-to-kubernetes.enabled=true \
+          --helm-set ingress.enabled=false \
+          --helm-set fullnameOverride=${{ steps.application.outputs.APPLICATION_NAME }} \
+          --helm-set bridge-to-kubernetes.route-from=${{ inputs.service-name }} \
+          --helm-set bridge-to-kubernetes.route-as=pr-${{ github.event.pull_request.number }} \
+
+    # https://github.com/argoproj/argo-cd/issues/9101
+    # - name: Argo - Set Image Tag
+    #   run: |
+    #     argocd app set ${{ inputs.environment }}-${{ inputs.service-name }} -p image.tag=${{ inputs.image-tag }}
+
+    - name: Argo - Sync
+      if: ${{ github.event_name == 'pull_request' }}
+      run: |
+        argocd app sync ${{ steps.application.outputs.APPLICATION_NAME }}
+
+    - name: Argo - Wait
+      if: ${{ github.event_name == 'pull_request' }}
+      run: |
+        argocd app wait ${{ steps.application.outputs.APPLICATION_NAME }}
+
+    - name: Argo - Verify
+      if: ${{ github.event_name == 'pull_request' }}
+      run: |
+        argocd app get ${{ steps.application.outputs.APPLICATION_NAME }}
 
     # - name: AKS - Login
     #   id: login

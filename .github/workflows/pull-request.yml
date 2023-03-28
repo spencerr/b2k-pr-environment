@@ -36,6 +36,7 @@ jobs:
     uses: ./.github/workflows/pull-request-workflow.yml
     secrets: inherit
     with:
+      service-name: 'gateway'
       solution-directory: './Bridge2Kubernetes.sln'
       docker-file-path: 'Gateway/FrontendGateway/Dockerfile'
       repository: 'docker.io/spencerritzow/frontend-gateway'
@@ -49,6 +50,7 @@ jobs:
     uses: ./.github/workflows/pull-request-workflow.yml
     secrets: inherit
     with:
+      service-name: 'services-bar'
       solution-directory: './Bridge2Kubernetes.sln'
       docker-file-path: 'Bar/BarMicroservice/Dockerfile'
       repository: 'docker.io/spencerritzow/bar-microservice'
@@ -62,6 +64,7 @@ jobs:
     uses: ./.github/workflows/pull-request-workflow.yml
     secrets: inherit
     with:
+      service-name: 'services-foo'
       solution-directory: './Bridge2Kubernetes.sln'
       docker-file-path: 'Foo/FooMicroservice/Dockerfile'
       repository: 'docker.io/spencerritzow/foo-microservice'
