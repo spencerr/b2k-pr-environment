@@ -96,11 +96,12 @@ jobs:
     - name: Argo - Create Application
       if: ${{ github.event_name == 'pull_request' }}
       run: |
-        argocd app create ${{ env.APPLICATION_NAME }} --upsert \
-          --repo ${{ secrets.ARGOCD_REPOSITORY }} \
-          --path apps/b2k-pr-environment/${{ inputs.service-name }} \
+        argocd app create ${{ env.APPLICATION_NAME }} --upsert \3
           --dest-name in-cluster \
           --dest-namespace alpha \
+          --project pull-requests \
+          --repo ${{ secrets.ARGOCD_REPOSITORY }} \
+          --path apps/b2k-pr-environment/${{ inputs.service-name }} \         
           --values values.yaml,alpha/values.yaml \
           --helm-set ingress.enabled=false \
           --helm-set fullnameOverride=${{ env.APPLICATION_NAME }} \
