@@ -105,9 +105,9 @@ jobs:
           --helm-set ingress.enabled=false \
           --helm-set fullnameOverride=${{ env.APPLICATION_NAME }} \
           --helm-set image.tag=pr-${{ github.event.pull_request.number }}-${{ steps.version.outputs.VERSION_TAG }} \
-          --helm-set bridge-to-kubernetes.enabled=true \
-          --helm-set bridge-to-kubernetes.route-from=${{ inputs.service-name }} \
-          --helm-set bridge-to-kubernetes.route-as=pr-${{ github.event.pull_request.number }} \
+          --helm-set bridgeToKubernetes.enabled=true \
+          --helm-set bridgeToKubernetes.routeFrom=${{ inputs.service-name }} \
+          --helm-set bridgeToKubernetes.routeAs=pr-${{ github.event.pull_request.number }} \
 
     # https://github.com/argoproj/argo-cd/issues/9101
     # - name: Argo - Set Image Tag
