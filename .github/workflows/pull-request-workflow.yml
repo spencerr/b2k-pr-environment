@@ -99,8 +99,8 @@ jobs:
         argocd app create ${{ env.APPLICATION_NAME }} --upsert \
           --repo ${{ secrets.ARGOCD_REPOSITORY }} \
           --path apps/b2k-pr-environment/${{ inputs.service-name }} \
+          --dest-name in-cluster \
           --dest-namespace alpha \
-          --dest-server in-cluster \
           --values values.yaml,alpha/values.yaml \
           --helm-set ingress.enabled=false \
           --helm-set fullnameOverride=${{ env.APPLICATION_NAME }} \
