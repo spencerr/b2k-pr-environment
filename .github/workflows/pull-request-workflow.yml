@@ -101,7 +101,7 @@ jobs:
           --dest-namespace alpha \
           --project pull-requests \
           --repo ${{ secrets.ARGOCD_REPOSITORY }} \
-          --path apps/b2k-pr-environment/${{ inputs.service-name }} \         
+          --path apps/b2k-pr-environment/${{ inputs.service-name }} \
           --values values.yaml,alpha/values.yaml \
           --helm-set ingress.enabled=false \
           --helm-set fullnameOverride=${{ env.APPLICATION_NAME }} \
