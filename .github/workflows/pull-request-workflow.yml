@@ -43,7 +43,7 @@ jobs:
         VERSION_TAG="${{ github.run_id }}"
         ATTEMPT=${{ github.run_attempt}}
         if [ $ATTEMPT -gt 1 ]; then
-          VERSION_TAG=VERSION_TAG + '-$ATTEMPT'
+          VERSION_TAG='$VERSION_TAG-$ATTEMPT'
         fi
         echo "Version: $VERSION_TAG"
         echo "VERSION_TAG=$VERSION_TAG" >> $GITHUB_OUTPUT
