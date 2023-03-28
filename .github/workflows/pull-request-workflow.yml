@@ -100,11 +100,12 @@ jobs:
           --repo ${{ secrets.ARGOCD_REPOSITORY }} \
           --path apps/b2k-pr-environment/${{ inputs.service-name }} \
           --dest-namespace alpha \
-          --dest-service in-cluster \
+          --dest-server in-cluster \
           --values values.yaml,alpha/values.yaml \
-          --helm-set bridge-to-kubernetes.enabled=true \
           --helm-set ingress.enabled=false \
           --helm-set fullnameOverride=${{ env.APPLICATION_NAME }} \
+          --helm-set image.tag=pr-${{ github.event.pull_request.number }}-${{ steps.version.outputs.VERSION_TAG }} \
+          --helm-set bridge-to-kubernetes.enabled=true \
           --helm-set bridge-to-kubernetes.route-from=${{ inputs.service-name }} \
           --helm-set bridge-to-kubernetes.route-as=pr-${{ github.event.pull_request.number }} \
 
